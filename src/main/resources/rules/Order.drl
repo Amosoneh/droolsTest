@@ -1,0 +1,29 @@
+package com.ecomart.rules
+
+import com.ecomart.datas.models.Cart
+import com.ecomart.datas.models.Order
+import java.math.BigDecimal
+
+rule "add 5% discount to order with amount greater than 10000 but less than 20000"
+     when
+            $cart: Cart($cartId: id, subTotal >= new BigDecimal("10000") && subTotal < new BigDecimal("20000"))
+            $order: Order(cartId == $cartId)
+        then
+            BigDecimal discountedAmount = $order.getTotalAmount().multiply(BigDecimal.ONE.subtract(new BigDecimal("0.05")));
+            modify($order){
+                setDiscount(5),
+                setTotalAmount(discountedAmount)
+            }
+end
+
+rule "add 10% discount to order with amount greater than 20000"
+     when
+            $cart: Cart($cartId: id, subTotal >= new BigDecimal("20000"))
+            $order: Order(cartId == $cartId)
+        then
+            BigDecimal discountedAmount = $order.getTotalAmount().multiply(BigDecimal.ONE.subtract(new BigDecimal("0.1")));
+            modify($order){
+                setDiscount(10),
+                setTotalAmount(discountedAmount)
+            }
+end

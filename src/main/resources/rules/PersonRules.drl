@@ -1,0 +1,16 @@
+package com.ecomart.rules
+
+import com.ecomart.datas.models.Customer;
+import com.ecomart.datas.models.Product;
+
+rule "isAdult"
+    when
+        $user: Customer(age >= 18)
+        $product: Product(category == "ADULT")
+    then
+        modify($product){
+            setAdultOnly(true)
+        };
+    end
+
+
